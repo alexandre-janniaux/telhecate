@@ -1,0 +1,6 @@
+[package]
+name = "telhecate"
+version = "0.1.0"
+authors = ["Alexandre Janniaux <alexandre.janniaux@gmail.com>"]
+
+[dependencies]
