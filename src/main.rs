@@ -8,18 +8,15 @@ use regex::Regex;
 
 fn extract_link(msg: &String) -> Option<String> {
     let match_link = Regex::new(r"https?://[a-zA-Z\./\?=&]+").unwrap();
-    match match_link.find(&msg) {
-        None => None,
-        Some(m) => Some(String::from(m.as_str()))
-    }
+    match_link
+        .find(&msg)
+        .map(|m| String::from(m.as_str()))
 }
 
 fn handle_message(api: &Api, evt : Message) {
     if let MessageType::Text(msg) = evt.msg {
-        let link = match extract_link(&msg) {
-            None => String::from("[None]"),
-            Some(l) => l
-        };
+        let link = extract_link(&msg)
+            .map_or(String::from("[None]"), |l| l);
         let r = api.send_message(
             evt.chat.id(),
             format!("Hi, {}! You sent {}, and I found link {}", evt.from.first_name, msg, link),
