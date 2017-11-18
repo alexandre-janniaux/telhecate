@@ -6,3 +6,5 @@ authors = ["Alexandre Janniaux <alexandre.janniaux@gmail.com>"]
 [dependencies]
 telegram-bot = "0.5"
 regex = "0.2"
+rocket = "0.3.3"
+rocket_codegen = "0.3.3"

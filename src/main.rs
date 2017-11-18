@@ -1,10 +1,18 @@
+#![feature(plugin)]
+#![plugin(rocket_codegen)]
+
 extern crate telegram_bot;
 extern crate regex;
+extern crate rocket;
 
 use telegram_bot::*;
 use regex::Regex;
+use std::thread;
 
-
+#[get("/")]
+fn index() -> &'static str {
+    "Hello, world!"
+}
 
 fn extract_link(msg: &String) -> Option<String> {
     let match_link = Regex::new(r"https?://[a-zA-Z\./\?=&]+").unwrap();
@@ -33,15 +41,22 @@ fn main() {
     println!("Hello, world!");
 
     let api = Api::from_env("TELEGRAM_BOT_TOKEN").unwrap();
-    let mut listener = api.listener(ListeningMethod::LongPoll(None));
 
-    listener.listen(|update| {
-        if let Some(m) = update.message {
-            handle_message(&api, m);
-        }
+    let thread_api = thread::spawn(move || {
+        let mut listener = api.listener(ListeningMethod::LongPoll(None));
 
-        Ok(ListeningAction::Continue)
-    }).expect("Couldn't bind the server");
+        listener.listen(|update| {
+            if let Some(m) = update.message {
+                handle_message(&api, m);
+            }
+
+            Ok(ListeningAction::Continue)
+        }).expect("Couldn't bind the server");
+    });
+
+    rocket::ignite().mount("/", routes![index]).launch();
+
+    thread_api.join().expect("The webserver has crashed");
 
     println!("Goodbye !");
 }
