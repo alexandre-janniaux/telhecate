@@ -9,10 +9,7 @@ use telegram_bot::*;
 use regex::Regex;
 use std::thread;
 
-#[get("/")]
-fn index() -> &'static str {
-    "Hello, world!"
-}
+mod webserver;
 
 fn extract_link(msg: &String) -> Option<String> {
     let match_link = Regex::new(r"https?://[a-zA-Z\./\?=&]+").unwrap();
@@ -54,7 +51,7 @@ fn main() {
         }).expect("Couldn't bind the server");
     });
 
-    rocket::ignite().mount("/", routes![index]).launch();
+    webserver::start_webserver();
 
     thread_api.join().expect("The webserver has crashed");
 
