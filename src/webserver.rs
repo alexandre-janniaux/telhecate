@@ -1,4 +1,4 @@
-extern crate rocket;
+use rocket;
 
 #[get("/")]
 fn index() -> &'static str {
