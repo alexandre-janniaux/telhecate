@@ -5,6 +5,11 @@ extern crate telegram_bot;
 extern crate regex;
 extern crate rocket;
 
+extern crate rocket_contrib;
+
+#[macro_use]
+extern crate serde_derive;
+
 use telegram_bot::*;
 use regex::Regex;
 use std::thread;
